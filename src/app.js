@@ -20,16 +20,27 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
-const osMap = {
-  win32: "Windows",
-  darwin: "macOS",
-  linux: "Linux"
-};
-
 document.querySelector("#app").style.display = "block";
-document.querySelector("#greet").innerHTML = greet();
-document.querySelector("#os").innerHTML = osMap[process.platform];
-document.querySelector("#author").innerHTML = manifest.author;
-document.querySelector("#env").innerHTML = env.name;
-document.querySelector("#electron-version").innerHTML =
-  process.versions.electron;
+console.info(manifest.author);
+console.info(env.name);
+console.info(manifest.version);
+console.info(process.platform);
+
+document.querySelector("button").addEventListener('click', function () {
+  const { spawn } = require('child_process');
+  const terminator = spawn('terminator');
+
+  terminator.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  terminator.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  terminator.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+})
+
+
