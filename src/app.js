@@ -26,9 +26,26 @@ console.info(env.name);
 console.info(manifest.version);
 console.info(process.platform);
 
-document.querySelector("button").addEventListener('click', function () {
+document.querySelector(".terminator").addEventListener('click', function () {
   const { spawn } = require('child_process');
   const terminator = spawn('terminator');
+
+  terminator.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  terminator.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  terminator.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+})
+
+document.querySelector(".localhost").addEventListener('click', function () {
+  const { spawn } = require('child_process');
+  const terminator = spawn('google-chrome-stable', [' http://localhost:3000']);
 
   terminator.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
