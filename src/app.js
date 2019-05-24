@@ -26,38 +26,32 @@ console.info(env.name);
 console.info(manifest.version);
 console.info(process.platform);
 
-document.querySelector(".terminator").addEventListener('click', function () {
+const run = (command) => {
   const { spawn } = require('child_process');
-  const terminator = spawn('terminator');
-
-  terminator.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+  const child = spawn(command.program, command.args);
+  child.stdout.on('data', (data) => {
+    console.log(`${command.name} stdout: ${data}`);
   });
-
-  terminator.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
+  child.stderr.on('data', (data) => {
+    console.log(`${command.name} stderr: ${data}`);
   });
+  child.on('close', (code) => {
+    console.log(`${command.name} child process exited with code ${code}`);
+  });
+}
 
-  terminator.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+document.querySelector(".terminator").addEventListener('click', function () {
+  run({
+    name: "terminator",
+    program: "terminator",
+    args: []
   });
 })
 
 document.querySelector(".localhost").addEventListener('click', function () {
-  const { spawn } = require('child_process');
-  const terminator = spawn('google-chrome-stable', [' http://localhost:3000']);
-
-  terminator.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  terminator.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
-  });
-
-  terminator.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+  run({
+    name: "localhost",
+    program: "google-chrome-stable",
+    args: ['http://localhost:3000']
   });
 })
-
-
