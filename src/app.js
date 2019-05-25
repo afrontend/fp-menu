@@ -21,11 +21,31 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
-document.querySelector("#app").style.display = "block";
-console.info(manifest.author);
-console.info(env.name);
-console.info(manifest.version);
-console.info(process.platform);
+const appendHtmlContent = () => {
+  const div = document.createElement("div");
+  div.id = "app";
+  div.className = "container";
+  div.style = "display: none";
+  const terminatorButton = document.createElement("button");
+  terminatorButton.style.width = "100%"
+  terminatorButton.className = "terminator"
+  terminatorButton.appendChild(document.createTextNode("terminator"));
+  const localhostButton = document.createElement("button");
+  localhostButton.style.width = "100%"
+  localhostButton.className = "localhost"
+  localhostButton.appendChild(document.createTextNode("localhost"));
+  div.appendChild(terminatorButton);
+  div.appendChild(localhostButton);
+  document.getElementsByTagName("body")[0].appendChild(div);
+  document.querySelector("#app").style.display = "block";
+};
+
+const displayAppInfo = () => {
+  console.info(manifest.author);
+  console.info(env.name);
+  console.info(manifest.version);
+  console.info(process.platform);
+};
 
 const run = (command) => {
   const { spawn } = require('child_process');
@@ -39,17 +59,17 @@ const run = (command) => {
   child.on('close', (code) => {
     console.log(`${command.name} child process exited with code ${code}`);
   });
-}
+};
 
 const commands = [
   {
-    tagName: ".terminator",
+    domSelector: ".terminator",
     name: "terminator",
     program: "terminator",
     args: []
   },
   {
-    tagName: ".localhost",
+    domSelector: ".localhost",
     name: "localhost",
     program: "google-chrome-stable",
     args: ['http://localhost:3000']
@@ -57,11 +77,17 @@ const commands = [
 ];
 
 const addCommandButton = (command) => {
-  document.querySelector(command.tagName).addEventListener('click', function () {
+  document.querySelector(command.domSelector).addEventListener('click', function () {
     run(command);
+  })
+};
+
+const activate = () => {
+  appendHtmlContent();
+  displayAppInfo();
+  _.each(commands, (command) => {
+    addCommandButton(command);
   })
 }
 
-_.each(commands, (command) => {
-  addCommandButton(command);
-})
+activate();
