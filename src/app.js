@@ -12,6 +12,7 @@ import { remote } from "electron";
 import jetpack from "fs-jetpack";
 import { greet } from "./hello_world/hello_world";
 import env from "env";
+import _ from "lodash"
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -40,18 +41,27 @@ const run = (command) => {
   });
 }
 
-document.querySelector(".terminator").addEventListener('click', function () {
-  run({
+const commands = [
+  {
+    tagName: ".terminator",
     name: "terminator",
     program: "terminator",
     args: []
-  });
-})
-
-document.querySelector(".localhost").addEventListener('click', function () {
-  run({
+  },
+  {
+    tagName: ".localhost",
     name: "localhost",
     program: "google-chrome-stable",
     args: ['http://localhost:3000']
-  });
+  }
+];
+
+const addCommandButton = (command) => {
+  document.querySelector(command.tagName).addEventListener('click', function () {
+    run(command);
+  })
+}
+
+_.each(commands, (command) => {
+  addCommandButton(command);
 })
