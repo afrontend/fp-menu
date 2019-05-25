@@ -21,21 +21,39 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
+const commands = [
+  {
+    className: "terminator",
+    name: "terminator",
+    program: "terminator",
+    args: []
+  },
+  {
+    className: "localhost",
+    name: "localhost",
+    program: "google-chrome-stable",
+    args: ['http://localhost:3000']
+  }
+];
+
+const getButton = (name) => {
+  const button = document.createElement("button");
+  button.style.width = "100%"
+  button.className = name;
+  button.appendChild(document.createTextNode(name));
+  return button;
+}
+
 const appendHtmlContent = () => {
   const div = document.createElement("div");
   div.id = "app";
   div.className = "container";
   div.style = "display: none";
-  const terminatorButton = document.createElement("button");
-  terminatorButton.style.width = "100%"
-  terminatorButton.className = "terminator"
-  terminatorButton.appendChild(document.createTextNode("terminator"));
-  const localhostButton = document.createElement("button");
-  localhostButton.style.width = "100%"
-  localhostButton.className = "localhost"
-  localhostButton.appendChild(document.createTextNode("localhost"));
-  div.appendChild(terminatorButton);
-  div.appendChild(localhostButton);
+
+  _.each(commands, (command) => {
+    div.appendChild(getButton(command.className));
+  });
+
   document.getElementsByTagName("body")[0].appendChild(div);
   document.querySelector("#app").style.display = "block";
 };
@@ -61,23 +79,8 @@ const run = (command) => {
   });
 };
 
-const commands = [
-  {
-    domSelector: ".terminator",
-    name: "terminator",
-    program: "terminator",
-    args: []
-  },
-  {
-    domSelector: ".localhost",
-    name: "localhost",
-    program: "google-chrome-stable",
-    args: ['http://localhost:3000']
-  }
-];
-
 const addCommandButton = (command) => {
-  document.querySelector(command.domSelector).addEventListener('click', function () {
+  document.querySelector(`.${command.className}`).addEventListener('click', function () {
     run(command);
   })
 };
