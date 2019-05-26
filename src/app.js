@@ -21,37 +21,26 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
-const commands = [
-  {
-    className: "terminator",
-    name: "terminator",
-    program: "terminator",
-    args: []
-  },
-  {
-    className: "localhost",
-    name: "localhost",
-    program: "google-chrome-stable",
-    args: ['http://localhost:3000']
-  }
-];
-
-const getButton = (name) => {
+const getButton = (command) => {
   const button = document.createElement("button");
-  button.style.width = "100%"
-  button.className = name;
-  button.appendChild(document.createTextNode(name));
+  button.className = command.className;
+  button.style.color = "black";
+  button.style.fontSize = "24px";
+  button.style.height = "40px";
+  button.style.marginBottom = "1px";
+  button.style.width = "100%";
+  button.appendChild(document.createTextNode(command.name));
   return button;
 }
 
-const appendHtmlContent = () => {
+const addButtons = (commands) => {
   const div = document.createElement("div");
   div.id = "app";
   div.className = "container";
   div.style = "display: none";
 
   _.each(commands, (command) => {
-    div.appendChild(getButton(command.className));
+    div.appendChild(getButton(command));
   });
 
   document.getElementsByTagName("body")[0].appendChild(div);
@@ -79,18 +68,35 @@ const run = (command) => {
   });
 };
 
-const addCommandButton = (command) => {
+const addCommandEvent = (command) => {
   document.querySelector(`.${command.className}`).addEventListener('click', function () {
     run(command);
   })
 };
 
-const activate = () => {
-  appendHtmlContent();
-  displayAppInfo();
+const addCommands = (commands) => {
   _.each(commands, (command) => {
-    addCommandButton(command);
+    addCommandEvent(command);
   })
 }
 
-activate();
+const activate = (commands) => {
+  addButtons(commands);
+  displayAppInfo();
+  addCommands(commands);
+}
+
+activate([
+  {
+    className: "terminator",
+    name: "터미널",
+    program: "terminator",
+    args: []
+  },
+  {
+    className: "localhost",
+    name: "로컬 웹 서버 접속",
+    program: "google-chrome-stable",
+    args: ['http://localhost:3000']
+  }
+]);
