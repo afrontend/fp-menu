@@ -13,6 +13,7 @@ import jetpack from "fs-jetpack";
 import { greet } from "./hello_world/hello_world";
 import env from "env";
 import _ from "lodash"
+import Mousetrap from "mousetrap";
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -22,9 +23,10 @@ const appDir = jetpack.cwd(app.getAppPath());
 const manifest = appDir.read("package.json", "json");
 
 const getButton = (command) => {
-  const button = document.createElement("button");
+  const button = document.createElement("div");
   button.className = command.className;
   button.style.color = "black";
+  button.style.backgroundColor = "white";
   button.style.fontSize = "24px";
   button.style.height = "40px";
   button.style.marginBottom = "1px";
@@ -70,7 +72,9 @@ const run = (command) => {
 
 const addCommandEvent = (command) => {
   document.querySelector(`.${command.className}`).addEventListener('click', function () {
-    run(command);
+    if (command.focused) {
+      run(command);
+    }
   })
 };
 
@@ -80,23 +84,64 @@ const addCommands = (commands) => {
   })
 }
 
+const updateButtons = (commands) => {
+  _.each(commands, (command) => {
+    if (command.focused) {
+      document.querySelector(`.${command.className}`).style.color = 'red';
+    } else {
+      document.querySelector(`.${command.className}`).style.color = 'black';
+    }
+  });
+}
+
+const focusNextButton = (commands) => {
+  console.log();
+  if (commands[commands.length - 1].focused) {
+    _.each(commands, (command) => {
+      command.focused = false;
+    });
+    commands[0].focused = true;
+  } else {
+    let found = false;
+    _.each(commands, (command) => {
+      if (found) {
+        found = false;
+        command.focused = true;
+      } else if (command.focused) {
+        found = true;
+        command.focused = false;
+      } else {
+        command.focused = false;
+      }
+    });
+  }
+
+  updateButtons(commands);
+}
+
 const activate = (commands) => {
   addButtons(commands);
   displayAppInfo();
   addCommands(commands);
+  updateButtons(commands);
+
+  Mousetrap.bind('j', function() { focusNextButton(commands) });
 }
+
 
 activate([
   {
     className: "terminator",
     name: "터미널",
     program: "terminator",
-    args: []
+    args: [],
+    focused: true
   },
   {
     className: "localhost",
     name: "로컬 웹 서버 접속",
     program: "google-chrome-stable",
-    args: ['http://localhost:3000']
+    args: ['http://localhost:3000'],
+    focused: false
   }
 ]);

@@ -34,9 +34,12 @@ app.on("ready", () => {
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
-    width: 1000,
-    height: 600
+    width: 400,
+    height: 200
   });
+
+  // mainWindow.setMaximumSize(400, 200);
+  mainWindow.setMinimumSize(400, 200);
 
   mainWindow.loadURL(
     url.format({
@@ -46,9 +49,11 @@ app.on("ready", () => {
     })
   );
 
-  if (env.name === "development") {
-    mainWindow.openDevTools();
-  }
+  /*
+   * if (env.name === "development") {
+   *   mainWindow.openDevTools();
+   * }
+   */
 });
 
 app.on("window-all-closed", () => {
