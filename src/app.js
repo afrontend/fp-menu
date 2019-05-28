@@ -100,7 +100,7 @@ const addCommands = commands => {
   })
 }
 
-const updateButtons = commands => {
+const render = commands => {
   _.each(commands, command => {
     if (command.focused) {
       document.querySelector(`.${command.className}`).style.color = BGCOLOR;
@@ -128,7 +128,7 @@ const focusNextButton = commands => {
     }
   }
 
-  updateButtons(commands);
+  render(commands);
 }
 
 const focusPrevButton = commands => {
@@ -147,14 +147,14 @@ const focusPrevButton = commands => {
     }
   }
 
-  updateButtons(commands);
+  render(commands);
 }
 
 const activate = (commands) => {
   addButtons(commands);
   displayAppInfo();
   addCommands(commands);
-  updateButtons(commands);
+  render(commands);
   Mousetrap.bind('j', () => { focusNextButton(commands); });
   Mousetrap.bind('down', () => { focusNextButton(commands); });
   Mousetrap.bind('k', () => { focusPrevButton(commands); });
