@@ -22,11 +22,14 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
+const COLOR = 'black'
+const BGCOLOR = "#F2F1F0"
+
 const getButton = (command) => {
   const button = document.createElement("div");
   button.className = command.className;
-  button.style.color = "black";
-  button.style.backgroundColor = "white";
+  button.style.color = COLOR;
+  button.style.backgroundColor = BGCOLOR;
   button.style.fontSize = "24px";
   button.style.height = "40px";
   button.style.marginBottom = "1px";
@@ -87,9 +90,11 @@ const addCommands = (commands) => {
 const updateButtons = (commands) => {
   _.each(commands, (command) => {
     if (command.focused) {
-      document.querySelector(`.${command.className}`).style.color = 'red';
+      document.querySelector(`.${command.className}`).style.color = BGCOLOR;
+      document.querySelector(`.${command.className}`).style.backgroundColor = COLOR;
     } else {
-      document.querySelector(`.${command.className}`).style.color = 'black';
+      document.querySelector(`.${command.className}`).style.color = COLOR;
+      document.querySelector(`.${command.className}`).style.backgroundColor = BGCOLOR;
     }
   });
 }
