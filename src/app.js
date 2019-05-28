@@ -25,26 +25,29 @@ const manifest = appDir.read("package.json", "json");
 const COLOR = 'black'
 const BGCOLOR = "#F2F1F0"
 
-const getButton = (command) => {
+const getButton = command => {
   const button = document.createElement("div");
   button.className = command.className;
   button.style.color = COLOR;
   button.style.backgroundColor = BGCOLOR;
   button.style.fontSize = "24px";
   button.style.height = "40px";
+  button.style.lineHeight= "40px";
   button.style.marginBottom = "1px";
   button.style.width = "100%";
+  button.style.paddingRight = "5px";
+  button.style.paddingLeft = "5px";
   button.appendChild(document.createTextNode(command.name));
   return button;
 }
 
-const addButtons = (commands) => {
+const addButtons = commands => {
   const div = document.createElement("div");
   div.id = "app";
   div.className = "container";
   div.style = "display: none";
 
-  _.each(commands, (command) => {
+  _.each(commands, command => {
     div.appendChild(getButton(command));
   });
 
@@ -59,7 +62,7 @@ const displayAppInfo = () => {
   console.info(process.platform);
 };
 
-const run = (command) => {
+const run = command => {
   if (Array.isArray(command)) {
     const found = _.find(command, (command) => command.focused === true);
     if (found) {
@@ -85,22 +88,20 @@ const run = (command) => {
   });
 };
 
-const addCommandEvent = (command) => {
+const addCommandEvent = command => {
   document.querySelector(`.${command.className}`).addEventListener('click', function () {
-    if (command.focused) {
-      run(command);
-    }
+    run(command);
   })
 };
 
-const addCommands = (commands) => {
-  _.each(commands, (command) => {
+const addCommands = commands => {
+  _.each(commands, command => {
     addCommandEvent(command);
   })
 }
 
-const updateButtons = (commands) => {
-  _.each(commands, (command) => {
+const updateButtons = commands => {
+  _.each(commands, command => {
     if (command.focused) {
       document.querySelector(`.${command.className}`).style.color = BGCOLOR;
       document.querySelector(`.${command.className}`).style.backgroundColor = COLOR;
@@ -111,26 +112,39 @@ const updateButtons = (commands) => {
   });
 }
 
-const focusNextButton = (commands) => {
-  console.log();
-  if (commands[commands.length - 1].focused) {
-    _.each(commands, (command) => {
-      command.focused = false;
-    });
+const focusNextButton = commands => {
+  if (!commands.length > 1) {
+    return;
+  }
+  if (_.every(commands, (command) => (command.focused))) {
     commands[0].focused = true;
   } else {
-    let found = false;
-    _.each(commands, (command) => {
-      if (found) {
-        found = false;
-        command.focused = true;
-      } else if (command.focused) {
-        found = true;
-        command.focused = false;
-      } else {
-        command.focused = false;
-      }
-    });
+    const currFocusedCommandIndex = _.findIndex(commands, { focused: true })
+    commands[currFocusedCommandIndex].focused = false;
+    if (commands[currFocusedCommandIndex + 1]) {
+      commands[currFocusedCommandIndex + 1].focused = true;
+    } else {
+      commands[0].focused = true;
+    }
+  }
+
+  updateButtons(commands);
+}
+
+const focusPrevButton = commands => {
+  if (!commands.length > 1) {
+    return;
+  }
+  if (_.every(commands, (command) => (command.focused))) {
+    commands[0].focused = true;
+  } else {
+    const currFocusedCommandIndex = _.findIndex(commands, { focused: true })
+    commands[currFocusedCommandIndex].focused = false;
+    if (commands[currFocusedCommandIndex - 1]) {
+      commands[currFocusedCommandIndex - 1].focused = true;
+    } else {
+      commands[commands.length - 1].focused = true;
+    }
   }
 
   updateButtons(commands);
@@ -141,16 +155,39 @@ const activate = (commands) => {
   displayAppInfo();
   addCommands(commands);
   updateButtons(commands);
-
   Mousetrap.bind('j', () => { focusNextButton(commands); });
+  Mousetrap.bind('down', () => { focusNextButton(commands); });
+  Mousetrap.bind('k', () => { focusPrevButton(commands); });
+  Mousetrap.bind('up', () => { focusPrevButton(commands); });
   Mousetrap.bind('enter', () => { run(commands); });
 }
 
 const commands = [
   {
+    className: "typora",
+    name: "Typora",
+    program: "typora",
+    args: ["~/doc/document.md"],
+    focused: false
+  },
+  {
+    className: "folder",
+    name: "Folder",
+    program: "nautilus",
+    args: [],
+    focused: false
+  },
+  {
     className: "terminator",
-    name: "터미널",
+    name: "Terminator Terminal",
     program: "terminator",
+    args: [],
+    focused: false
+  },
+  {
+    className: "hyper",
+    name: "Hyper Terminal",
+    program: "hyper",
     args: [],
     focused: false
   },
