@@ -25,9 +25,9 @@ const manifest = appDir.read("package.json", "json");
 const COLOR = 'black'
 const BGCOLOR = "#F2F1F0"
 
-const getButton = command => {
+const getButton = cmd => {
   const button = document.createElement("div");
-  button.className = command.className;
+  button.className = cmd.className;
   button.style.color = COLOR;
   button.style.backgroundColor = BGCOLOR;
   button.style.fontSize = "24px";
@@ -37,18 +37,18 @@ const getButton = command => {
   button.style.width = "100%";
   button.style.paddingRight = "5px";
   button.style.paddingLeft = "5px";
-  button.appendChild(document.createTextNode(command.name));
+  button.appendChild(document.createTextNode(cmd.name));
   return button;
 }
 
-const addButtons = commands => {
+const addButtons = cmds => {
   const div = document.createElement("div");
   div.id = "app";
   div.className = "container";
   div.style = "display: none";
 
-  _.each(commands, command => {
-    div.appendChild(getButton(command));
+  _.each(cmds, cmd => {
+    div.appendChild(getButton(cmd));
   });
 
   document.getElementsByTagName("body")[0].appendChild(div);
@@ -62,104 +62,106 @@ const displayAppInfo = () => {
   console.info(process.platform);
 };
 
-const run = command => {
-  if (Array.isArray(command)) {
-    const found = _.find(command, (command) => command.focused === true);
+const run = cmd => {
+  if (Array.isArray(cmd)) {
+    const found = _.find(cmd, (cmd) => cmd.focused === true);
     if (found) {
       return run(found);
     }
   }
 
-  if (!command.program) {
+  if (!cmd.program) {
     console.warn("Invalid program");
     return;
   }
 
   const { spawn } = require('child_process');
-  const child = spawn(command.program, command.args);
+  const child = spawn(cmd.program, cmd.args);
   child.stdout.on('data', (data) => {
-    console.log(`${command.name} stdout: ${data}`);
+    console.log(`${cmd.name} stdout: ${data}`);
   });
   child.stderr.on('data', (data) => {
-    console.log(`${command.name} stderr: ${data}`);
+    console.log(`${cmd.name} stderr: ${data}`);
   });
   child.on('close', (code) => {
-    console.log(`${command.name} child process exited with code ${code}`);
+    console.log(`${cmd.name} child process exited with code ${code}`);
   });
 };
 
-const addCommandEvent = command => {
-  document.querySelector(`.${command.className}`).addEventListener('click', function () {
-    run(command);
+const addCommandEvent = cmd => {
+  document.querySelector(`.${cmd.className}`).addEventListener('click', function () {
+    run(cmd);
   })
 };
 
-const addCommands = commands => {
-  _.each(commands, command => {
-    addCommandEvent(command);
+const addCommands = cmds => {
+  _.each(cmds, cmd => {
+    addCommandEvent(cmd);
   })
 }
 
-const render = commands => {
-  _.each(commands, command => {
-    if (command.focused) {
-      document.querySelector(`.${command.className}`).style.color = BGCOLOR;
-      document.querySelector(`.${command.className}`).style.backgroundColor = COLOR;
+const render = cmds => {
+  _.each(cmds, cmd => {
+    if (cmd.focused) {
+      document.querySelector(`.${cmd.className}`).style.color = BGCOLOR;
+      document.querySelector(`.${cmd.className}`).style.backgroundColor = COLOR;
     } else {
-      document.querySelector(`.${command.className}`).style.color = COLOR;
-      document.querySelector(`.${command.className}`).style.backgroundColor = BGCOLOR;
+      document.querySelector(`.${cmd.className}`).style.color = COLOR;
+      document.querySelector(`.${cmd.className}`).style.backgroundColor = BGCOLOR;
     }
   });
 }
 
-const focusNextButton = commands => {
-  if (!commands.length > 1) {
+const focusNextButton = cmds => {
+  if (!(cmds.length > 1)) {
     return;
   }
-  if (_.every(commands, (command) => (command.focused))) {
-    commands[0].focused = true;
+  if (_.every(cmds, (cmd) => (!cmd.focused))) {
+    cmds[0].focused = true;
   } else {
-    const currFocusedCommandIndex = _.findIndex(commands, { focused: true })
-    commands[currFocusedCommandIndex].focused = false;
-    if (commands[currFocusedCommandIndex + 1]) {
-      commands[currFocusedCommandIndex + 1].focused = true;
+    const index = _.findIndex(cmds, { focused: true })
+    cmds[index].focused = false;
+    if (cmds[index + 1]) {
+      cmds[index + 1].focused = true;
     } else {
-      commands[0].focused = true;
+      cmds[0].focused = true;
     }
   }
 
-  render(commands);
+  render(cmds);
 }
 
-const focusPrevButton = commands => {
-  if (!commands.length > 1) {
+const focusPrevButton = cmds => {
+  if (!(cmds.length > 1)) {
     return;
   }
-  if (_.every(commands, (command) => (command.focused))) {
-    commands[0].focused = true;
+  if (_.every(cmds, (cmd) => (!cmd.focused))) {
+    cmds[0].focused = true;
   } else {
-    const currFocusedCommandIndex = _.findIndex(commands, { focused: true })
-    commands[currFocusedCommandIndex].focused = false;
-    if (commands[currFocusedCommandIndex - 1]) {
-      commands[currFocusedCommandIndex - 1].focused = true;
+    const index = _.findIndex(cmds, { focused: true })
+    cmds[index].focused = false;
+    if (cmds[index - 1]) {
+      cmds[index - 1].focused = true;
     } else {
-      commands[commands.length - 1].focused = true;
+      cmds[cmds.length - 1].focused = true;
     }
   }
 
-  render(commands);
+  render(cmds);
 }
 
-const activate = (commands) => {
-  addButtons(commands);
+const activate = cmds => {
+  cmds[0].focused = true;
+
+  addButtons(cmds);
   displayAppInfo();
-  addCommands(commands);
-  render(commands);
-  Mousetrap.bind('j', () => { focusNextButton(commands); });
-  Mousetrap.bind('down', () => { focusNextButton(commands); });
-  Mousetrap.bind('k', () => { focusPrevButton(commands); });
-  Mousetrap.bind('up', () => { focusPrevButton(commands); });
-  Mousetrap.bind('enter', () => { run(commands); });
+  addCommands(cmds);
+  render(cmds);
+  Mousetrap.bind('j', () => { focusNextButton(cmds); });
+  Mousetrap.bind('down', () => { focusNextButton(cmds); });
+  Mousetrap.bind('k', () => { focusPrevButton(cmds); });
+  Mousetrap.bind('up', () => { focusPrevButton(cmds); });
+  Mousetrap.bind('enter', () => { run(cmds); });
 }
 
 const commands = [
@@ -167,39 +169,32 @@ const commands = [
     className: "typora",
     name: "Typora",
     program: "typora",
-    args: ["~/doc/document.md"],
-    focused: false
+    args: ["~/doc/document.md"]
   },
   {
     className: "folder",
     name: "Folder",
     program: "nautilus",
-    args: [],
-    focused: false
+    args: []
   },
   {
     className: "terminator",
     name: "Terminator Terminal",
     program: "terminator",
-    args: [],
-    focused: false
+    args: []
   },
   {
     className: "hyper",
     name: "Hyper Terminal",
     program: "hyper",
-    args: [],
-    focused: false
+    args: []
   },
   {
     className: "localhost",
     name: "로컬 웹 서버 접속",
     program: "google-chrome-stable",
-    args: ['http://localhost:3000'],
-    focused: false
+    args: ['http://localhost:3000']
   }
 ];
-
-commands[0].focused = true;
 
 activate(commands);
