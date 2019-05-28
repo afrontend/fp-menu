@@ -60,6 +60,18 @@ const displayAppInfo = () => {
 };
 
 const run = (command) => {
+  if (Array.isArray(command)) {
+    const found = _.find(command, (command) => command.focused === true);
+    if (found) {
+      return run(found);
+    }
+  }
+
+  if (!command.program) {
+    console.warn("Invalid program");
+    return;
+  }
+
   const { spawn } = require('child_process');
   const child = spawn(command.program, command.args);
   child.stdout.on('data', (data) => {
@@ -130,17 +142,17 @@ const activate = (commands) => {
   addCommands(commands);
   updateButtons(commands);
 
-  Mousetrap.bind('j', function() { focusNextButton(commands) });
+  Mousetrap.bind('j', () => { focusNextButton(commands); });
+  Mousetrap.bind('enter', () => { run(commands); });
 }
 
-
-activate([
+const commands = [
   {
     className: "terminator",
     name: "터미널",
     program: "terminator",
     args: [],
-    focused: true
+    focused: false
   },
   {
     className: "localhost",
@@ -149,4 +161,8 @@ activate([
     args: ['http://localhost:3000'],
     focused: false
   }
-]);
+];
+
+commands[0].focused = true;
+
+activate(commands);
