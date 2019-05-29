@@ -27,7 +27,7 @@ const BGCOLOR = "#F2F1F0"
 
 const getButton = cmd => {
   const button = document.createElement("div");
-  button.className = cmd.className;
+  button.className = cmd.id;
   button.style.color = COLOR;
   button.style.backgroundColor = BGCOLOR;
   button.style.fontSize = "24px";
@@ -62,52 +62,61 @@ const displayAppInfo = () => {
   console.info(process.platform);
 };
 
-const run = cmd => {
-  if (Array.isArray(cmd)) {
-    const found = _.find(cmd, (cmd) => cmd.focused === true);
-    if (found) {
-      return run(found);
+const runById = (id) => {
+  _.each(cmdList, cmd => {
+    if (cmd.id == id) {
+      cmd.focused = true;
+    } else {
+      cmd.focused = false;
     }
-  }
+  });
 
-  if (!cmd.program) {
+  render(cmdList);
+  run(cmdList);
+}
+
+const run = cmdAry => {
+  const found = _.find(cmdAry, (cmd) => cmd.focused === true);
+  if (!found) return;
+
+  if (!found.program) {
     console.warn("Invalid program");
     return;
   }
 
   const { spawn } = require('child_process');
-  const child = spawn(cmd.program, cmd.args);
+  const child = spawn(found.program, found.args);
   child.stdout.on('data', (data) => {
-    console.log(`${cmd.name} stdout: ${data}`);
+    console.log(`${found.name} stdout: ${data}`);
   });
   child.stderr.on('data', (data) => {
-    console.log(`${cmd.name} stderr: ${data}`);
+    console.log(`${found.name} stderr: ${data}`);
   });
   child.on('close', (code) => {
-    console.log(`${cmd.name} child process exited with code ${code}`);
+    console.log(`${found.name} child process exited with code ${code}`);
   });
 };
 
-const addCommandEvent = cmd => {
-  document.querySelector(`.${cmd.className}`).addEventListener('click', function () {
-    run(cmd);
+const addCommandEvent = id => {
+  document.querySelector(`.${id}`).addEventListener('click', function () {
+    runById(id);
   })
 };
 
 const addCommands = cmdAry => {
   _.each(cmdAry, cmd => {
-    addCommandEvent(cmd);
+    addCommandEvent(cmd.id);
   })
 }
 
 const render = cmdAry => {
   _.each(cmdAry, cmd => {
     if (cmd.focused) {
-      document.querySelector(`.${cmd.className}`).style.color = BGCOLOR;
-      document.querySelector(`.${cmd.className}`).style.backgroundColor = COLOR;
+      document.querySelector(`.${cmd.id}`).style.color = BGCOLOR;
+      document.querySelector(`.${cmd.id}`).style.backgroundColor = COLOR;
     } else {
-      document.querySelector(`.${cmd.className}`).style.color = COLOR;
-      document.querySelector(`.${cmd.className}`).style.backgroundColor = BGCOLOR;
+      document.querySelector(`.${cmd.id}`).style.color = COLOR;
+      document.querySelector(`.${cmd.id}`).style.backgroundColor = BGCOLOR;
     }
   });
 }
@@ -183,7 +192,7 @@ const getCmdList = () => {
 
   return _.map(cmdAry, ([title, cmd], index) => {
     return {
-      "className": `id${index}`,
+      "id": `id${index}`,
       "name": title,
       "program": cmd.split(' ')[0],
       "args": _.tail(cmd.split(' '))
