@@ -8,7 +8,7 @@
   "homepage": "https://agvim.wordpress.com",
   "main": "app/background.js",
   "build": {
-    "appId": "com.wordpress.agvim.fp-menu",
+    "appId": "io.github.afrontend.fp-menu",
     "files": [
       "app/**/*",
       "node_modules/**/*",
