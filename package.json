@@ -2,7 +2,7 @@
   "name": "fp-menu",
   "productName": "Electron Menu",
   "description": "Execute the external command",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "author": "Bob Hwang <frontend.wordpress@gmail.com>",
   "homepage": "https://agvim.wordpress.com",
