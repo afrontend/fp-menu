@@ -41,13 +41,13 @@ const getButton = cmd => {
   return button;
 }
 
-const addButtons = cmds => {
+const addButtons = cmdAry => {
   const div = document.createElement("div");
   div.id = "app";
   div.className = "container";
   div.style = "display: none";
 
-  _.each(cmds, cmd => {
+  _.each(cmdAry, cmd => {
     div.appendChild(getButton(cmd));
   });
 
@@ -94,14 +94,14 @@ const addCommandEvent = cmd => {
   })
 };
 
-const addCommands = cmds => {
-  _.each(cmds, cmd => {
+const addCommands = cmdAry => {
+  _.each(cmdAry, cmd => {
     addCommandEvent(cmd);
   })
 }
 
-const render = cmds => {
-  _.each(cmds, cmd => {
+const render = cmdAry => {
+  _.each(cmdAry, cmd => {
     if (cmd.focused) {
       document.querySelector(`.${cmd.className}`).style.color = BGCOLOR;
       document.querySelector(`.${cmd.className}`).style.backgroundColor = COLOR;
@@ -112,89 +112,85 @@ const render = cmds => {
   });
 }
 
-const focusNextButton = cmds => {
-  if (!(cmds.length > 1)) {
+const focusNextButton = cmdAry => {
+  if (!(cmdAry.length > 1)) {
     return;
   }
-  if (_.every(cmds, (cmd) => (!cmd.focused))) {
-    cmds[0].focused = true;
+  if (_.every(cmdAry, (cmd) => (!cmd.focused))) {
+    cmdAry[0].focused = true;
   } else {
-    const index = _.findIndex(cmds, { focused: true })
-    cmds[index].focused = false;
-    if (cmds[index + 1]) {
-      cmds[index + 1].focused = true;
+    const index = _.findIndex(cmdAry, { focused: true })
+    cmdAry[index].focused = false;
+    if (cmdAry[index + 1]) {
+      cmdAry[index + 1].focused = true;
     } else {
-      cmds[0].focused = true;
+      cmdAry[0].focused = true;
     }
   }
 
-  render(cmds);
+  render(cmdAry);
 }
 
-const focusPrevButton = cmds => {
-  if (!(cmds.length > 1)) {
+const focusPrevButton = cmdAry => {
+  if (!(cmdAry.length > 1)) {
     return;
   }
-  if (_.every(cmds, (cmd) => (!cmd.focused))) {
-    cmds[0].focused = true;
+  if (_.every(cmdAry, (cmd) => (!cmd.focused))) {
+    cmdAry[0].focused = true;
   } else {
-    const index = _.findIndex(cmds, { focused: true })
-    cmds[index].focused = false;
-    if (cmds[index - 1]) {
-      cmds[index - 1].focused = true;
+    const index = _.findIndex(cmdAry, { focused: true })
+    cmdAry[index].focused = false;
+    if (cmdAry[index - 1]) {
+      cmdAry[index - 1].focused = true;
     } else {
-      cmds[cmds.length - 1].focused = true;
+      cmdAry[cmdAry.length - 1].focused = true;
     }
   }
 
-  render(cmds);
+  render(cmdAry);
 }
 
-const activate = cmds => {
-  cmds[0].focused = true;
+const activate = cmdAry => {
+  if (!cmdAry) return [];
 
-  addButtons(cmds);
+  if (cmdAry[0]) {
+    cmdAry[0].focused = true;
+  }
+
+  addButtons(cmdAry);
   displayAppInfo();
-  addCommands(cmds);
-  render(cmds);
-  Mousetrap.bind('j', () => { focusNextButton(cmds); });
-  Mousetrap.bind('down', () => { focusNextButton(cmds); });
-  Mousetrap.bind('k', () => { focusPrevButton(cmds); });
-  Mousetrap.bind('up', () => { focusPrevButton(cmds); });
-  Mousetrap.bind('enter', () => { run(cmds); });
+  addCommands(cmdAry);
+  render(cmdAry);
+  Mousetrap.bind('j', () => { focusNextButton(cmdAry); });
+  Mousetrap.bind('down', () => { focusNextButton(cmdAry); });
+  Mousetrap.bind('k', () => { focusPrevButton(cmdAry); });
+  Mousetrap.bind('up', () => { focusPrevButton(cmdAry); });
+  Mousetrap.bind('enter', () => { run(cmdAry); });
 }
 
-const commands = [
-  {
-    className: "typora",
-    name: "Typora",
-    program: "typora",
-    args: ["~/doc/document.md"]
-  },
-  {
-    className: "folder",
-    name: "Folder",
-    program: "nautilus",
-    args: []
-  },
-  {
-    className: "terminator",
-    name: "Terminator Terminal",
-    program: "terminator",
-    args: []
-  },
-  {
-    className: "hyper",
-    name: "Hyper Terminal",
-    program: "hyper",
-    args: []
-  },
-  {
-    className: "localhost",
-    name: "로컬 웹 서버 접속",
-    program: "google-chrome-stable",
-    args: ['http://localhost:3000']
-  }
-];
+const getCmdList = () => {
+  const remote = require('electron').remote;
+  const ary = remote.getGlobal('sharedObject').argv;
 
-activate(commands);
+  console.log(ary);
+  ary.shift();
+  ary.shift();
+  const titleAry = _.filter(ary, (value, index) => (index % 2 === 0));
+  const programAry = _.filter(ary, (value, index) => (index % 2 !== 0));
+  const cmdAry = _.filter(_.zip(titleAry, programAry), pair => pair[0] && pair[1] && pair[0][0] !== '-');
+
+  console.log('cmdAry: ' + cmdAry);
+
+  return _.map(cmdAry, ([title, cmd], index) => {
+    return {
+      "className": `id${index}`,
+      "name": title,
+      "program": cmd.split(' ')[0],
+      "args": _.tail(cmd.split(' '))
+    }
+  });
+};
+
+const cmdList = getCmdList();
+
+activate(cmdList);

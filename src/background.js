@@ -31,6 +31,8 @@ if (env.name !== "production") {
 }
 
 app.on("ready", () => {
+  global.sharedObject = {argv: process.argv}
+
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
