@@ -6,8 +6,8 @@ describe("application launch", () => {
   afterEach(testUtils.afterEach);
 
   it("shows hello world text on screen after launch", function() {
-    return this.app.client.getText(".localhost").then(text => {
-      expect(text).to.equal("로컬 웹 서버 접속");
+    return this.app.client.getText(".id0").then(text => {
+      expect(text).to.equal("terminator");
     });
   });
 });

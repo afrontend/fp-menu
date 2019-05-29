@@ -192,14 +192,26 @@ const getCmdList = () => {
 
   return _.map(cmdAry, ([title, cmd], index) => {
     return {
-      "id": `id${index}`,
-      "name": title,
-      "program": cmd.split(' ')[0],
-      "args": _.tail(cmd.split(' '))
+      id: `id${index}`,
+      name: title,
+      program: cmd.split(' ')[0],
+      args: _.tail(cmd.split(' '))
     }
   });
 };
 
-const cmdList = getCmdList();
+let cmdList = getCmdList();
+
+if (cmdList.length === 0) {
+  cmdList = [
+    {
+      id: "id0",
+      name: "terminator",
+      program: "terminator",
+      args: []
+    }
+  ];
+} else {
+}
 
 activate(cmdList);
