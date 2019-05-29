@@ -181,14 +181,15 @@ const getCmdList = () => {
   const remote = require('electron').remote;
   const ary = remote.getGlobal('sharedObject').argv;
 
-  console.log(ary);
   ary.shift();
-  ary.shift();
+
+  if (ary[0] === ".") {
+    ary.shift();
+  }
+
   const titleAry = _.filter(ary, (value, index) => (index % 2 === 0));
   const programAry = _.filter(ary, (value, index) => (index % 2 !== 0));
   const cmdAry = _.filter(_.zip(titleAry, programAry), pair => pair[0] && pair[1] && pair[0][0] !== '-');
-
-  console.log('cmdAry: ' + cmdAry);
 
   return _.map(cmdAry, ([title, cmd], index) => {
     return {
@@ -201,17 +202,5 @@ const getCmdList = () => {
 };
 
 let cmdList = getCmdList();
-
-if (cmdList.length === 0) {
-  cmdList = [
-    {
-      id: "id0",
-      name: "terminator",
-      program: "terminator",
-      args: []
-    }
-  ];
-} else {
-}
 
 activate(cmdList);
