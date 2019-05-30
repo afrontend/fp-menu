@@ -177,7 +177,7 @@ const activate = cmdAry => {
   Mousetrap.bind('enter', () => { run(cmdAry); });
 }
 
-const getCmdList = () => {
+const getCmdListFromArgv = () => {
   const remote = require('electron').remote;
   const ary = remote.getGlobal('sharedObject').argv;
 
@@ -189,18 +189,58 @@ const getCmdList = () => {
 
   const titleAry = _.filter(ary, (value, index) => (index % 2 === 0));
   const programAry = _.filter(ary, (value, index) => (index % 2 !== 0));
-  const cmdAry = _.filter(_.zip(titleAry, programAry), pair => pair[0] && pair[1] && pair[0][0] !== '-');
+  const cmdAry = _.filter(
+    _.zip(titleAry, programAry),
+    pair => pair[0] && pair[1] && pair[0][0] !== '-'
+  );
 
-  return _.map(cmdAry, ([title, cmd], index) => {
+  return _.map(cmdAry, ([title, program], index) => {
     return {
       id: `id${index}`,
       name: title,
-      program: cmd.split(' ')[0],
-      args: _.tail(cmd.split(' '))
+      program: program.split(' ')[0],
+      args: _.tail(program.split(' '))
     }
   });
-};
+}
 
-let cmdList = getCmdList();
+const getCmdListFromFile = () => {
+
+/*
+ * ~/.fp-menu.json
+ *
+ * {
+ *   "cmdList": [
+ *     {
+ *       "title": "xeyes",
+ *       "program": "xeyes"
+ *     }
+ *   ]
+ * }
+ */
+
+  const fs = require('fs');
+  const path = require('path');
+  const rc_file_path = path.resolve(process.env.HOME, '.fp-menu.json')
+
+  let cmdList = [];
+
+  if (fs.existsSync(rc_file_path)) {
+    const obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
+    cmdList = obj.cmdList;
+  }
+
+  return _.map(cmdList, (cmd, index) => {
+    return {
+      id: `id${index}`,
+      name: cmd.title,
+      program: cmd.program.split(' ')[0],
+      args: _.tail(cmd.program.split(' '))
+    }
+  });
+}
+
+// let cmdList = getCmdListFromArgv();
+let cmdList = getCmdListFromFile();
 
 activate(cmdList);
