@@ -34,7 +34,7 @@ const getButton = cmd => {
   button.style.height = "40px";
   button.style.lineHeight= "40px";
   button.style.marginBottom = "1px";
-  button.style.width = "100%";
+  button.style.width = "300px";
   button.style.paddingRight = "5px";
   button.style.paddingLeft = "5px";
   button.appendChild(document.createTextNode(cmd.name));
@@ -240,7 +240,10 @@ const getCmdListFromFile = () => {
   });
 }
 
-// let cmdList = getCmdListFromArgv();
-let cmdList = getCmdListFromFile();
+let cmdList = [];
+cmdList = getCmdListFromArgv();
+if (cmdList.length === 0) {
+  cmdList = getCmdListFromFile();
+}
 
 activate(cmdList);
