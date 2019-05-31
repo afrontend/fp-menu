@@ -226,7 +226,12 @@ const getCmdListFromFile = () => {
   let cmdList = [];
 
   if (fs.existsSync(rc_file_path)) {
-    const obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
+    let obj = {};
+    try {
+      obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
+    } catch (e) {
+      obj.cmdList = [];
+    }
     cmdList = obj.cmdList;
   }
 
