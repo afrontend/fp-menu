@@ -40,7 +40,7 @@ app.on("ready", () => {
     height: 500
   });
 
-  mainWindow.setMaximumSize(300, 500);
+  // mainWindow.setMaximumSize(300, 500);
   mainWindow.setMinimumSize(300, 500);
 
   mainWindow.loadURL(

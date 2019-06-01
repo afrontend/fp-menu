@@ -177,6 +177,15 @@ const activate = cmdAry => {
   Mousetrap.bind('enter', () => { run(cmdAry); });
 }
 
+const makeCmd = (cmd, index) => {
+  return {
+    id: `id${index}`,
+    name: cmd.title,
+    program: cmd.program.split(' ')[0],
+    args: _.tail(cmd.program.split(' '))
+  }
+}
+
 const getCmdListFromArgv = () => {
   const remote = require('electron').remote;
   const ary = remote.getGlobal('sharedObject').argv;
@@ -194,14 +203,14 @@ const getCmdListFromArgv = () => {
     pair => pair[0] && pair[1] && pair[0][0] !== '-'
   );
 
-  return _.map(cmdAry, ([title, program], index) => {
+  const cmdList = _.map(cmdAry, (cmd) => {
     return {
-      id: `id${index}`,
-      name: title,
-      program: program.split(' ')[0],
-      args: _.tail(program.split(' '))
+      title: cmd[0],
+      program: cmd[1]
     }
   });
+
+  return _.map(cmdList, makeCmd);
 }
 
 const getCmdListFromFile = () => {
@@ -235,14 +244,7 @@ const getCmdListFromFile = () => {
     cmdList = obj.cmdList;
   }
 
-  return _.map(cmdList, (cmd, index) => {
-    return {
-      id: `id${index}`,
-      name: cmd.title,
-      program: cmd.program.split(' ')[0],
-      args: _.tail(cmd.program.split(' '))
-    }
-  });
+  return _.map(cmdList, makeCmd);
 }
 
 let cmdList = [];

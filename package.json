@@ -1,6 +1,6 @@
 {
   "name": "fp-menu",
-  "productName": "Electron Menu",
+  "productName": "Fp-Menu",
   "description": "Execute the external command",
   "version": "0.0.1",
   "private": true,
