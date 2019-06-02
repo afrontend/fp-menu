@@ -213,6 +213,10 @@ const getCmdListFromArgv = () => {
   return _.map(cmdList, makeCmd);
 }
 
+const notify = (msg) => {
+  new Notification('Info', { body: msg });
+}
+
 const getCmdListFromFile = () => {
 
 /*
@@ -239,6 +243,7 @@ const getCmdListFromFile = () => {
     try {
       obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
     } catch (e) {
+      notify("parse error (~/.fp-menu.json) ");
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
