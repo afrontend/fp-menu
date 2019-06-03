@@ -36,12 +36,12 @@ app.on("ready", () => {
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
-    width: 300,
-    height: 500
+    width: 400,
+    height: 600
   });
 
   // mainWindow.setMaximumSize(300, 500);
-  mainWindow.setMinimumSize(300, 500);
+  mainWindow.setMinimumSize(400, 600);
 
   mainWindow.loadURL(
     url.format({

@@ -34,7 +34,7 @@ const getButton = cmd => {
   button.style.height = "40px";
   button.style.lineHeight= "40px";
   button.style.marginBottom = "1px";
-  button.style.width = "300px";
+  button.style.width = "400px";
   button.style.paddingRight = "5px";
   button.style.paddingLeft = "5px";
   button.appendChild(document.createTextNode(cmd.name));
@@ -53,6 +53,7 @@ const addButtons = cmdAry => {
 
   document.getElementsByTagName("body")[0].appendChild(div);
   document.querySelector("#app").style.display = "block";
+  document.querySelector("#app").style.border = "5px dotted red";
 };
 
 const displayAppInfo = () => {
