@@ -53,7 +53,6 @@ const addButtons = cmdAry => {
 
   document.getElementsByTagName("body")[0].appendChild(div);
   document.querySelector("#app").style.display = "block";
-  document.querySelector("#app").style.border = "5px dotted red";
 };
 
 const displayAppInfo = () => {
