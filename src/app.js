@@ -8,12 +8,15 @@ import "./helpers/external_links.js";
 // Everything below is just to show you how it works. You can delete all of it.
 // ----------------------------------------------------------------------------
 
-import { remote } from "electron";
-import jetpack from "fs-jetpack";
-import { greet } from "./hello_world/hello_world";
-import env from "env";
-import _ from "lodash"
 import Mousetrap from "mousetrap";
+import _ from "lodash"
+import env from "env";
+import fs  from 'fs';
+import jetpack from "fs-jetpack";
+import path  from 'path';
+import { greet } from "./hello_world/hello_world";
+import { remote } from "electron";
+import { spawn } from 'child_process';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -84,7 +87,6 @@ const run = cmdAry => {
     return;
   }
 
-  const { spawn } = require('child_process');
   const child = spawn(found.program, found.args);
   child.stdout.on('data', (data) => {
     console.log(`${found.name} stdout: ${data}`);
@@ -187,7 +189,6 @@ const makeCmd = (cmd, index) => {
 }
 
 const getCmdListFromArgv = () => {
-  const remote = require('electron').remote;
   const ary = remote.getGlobal('sharedObject').argv;
 
   ary.shift();
@@ -232,8 +233,6 @@ const getCmdListFromFile = () => {
  * }
  */
 
-  const fs = require('fs');
-  const path = require('path');
   const rc_file_path = path.resolve(process.env.HOME, '.fp-menu.json')
 
   let cmdList = [];
