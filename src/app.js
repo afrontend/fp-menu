@@ -177,6 +177,7 @@ const activate = cmdAry => {
   Mousetrap.bind('k', () => { focusPrevButton(cmdAry); });
   Mousetrap.bind('up', () => { focusPrevButton(cmdAry); });
   Mousetrap.bind('enter', () => { run(cmdAry); });
+  Mousetrap.bind('q', () => { app.quit(); });
 }
 
 const makeCmd = (cmd, index) => {
