@@ -97,6 +97,8 @@ const run = cmdAry => {
   child.on('close', (code) => {
     console.log(`${found.name} child process exited with code ${code}`);
   });
+
+  app.quit();
 };
 
 const addCommandEvent = id => {
