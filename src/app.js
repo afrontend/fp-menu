@@ -224,7 +224,7 @@ const notify = (msg) => {
 const getCmdListFromFile = () => {
 
 /*
- * ~/.fp-menu.json
+ * ~/.xmenu.json
  *
  * {
  *   "cmdList": [
@@ -236,7 +236,7 @@ const getCmdListFromFile = () => {
  * }
  */
 
-  const rc_file_path = path.resolve(process.env.HOME, '.fp-menu.json')
+  const rc_file_path = path.resolve(process.env.HOME, '.xmenu.json')
 
   let cmdList = [];
 
@@ -245,7 +245,7 @@ const getCmdListFromFile = () => {
     try {
       obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
     } catch (e) {
-      notify("parse error (~/.fp-menu.json) ");
+      notify("parse error (~/.xmenu.json) ");
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
