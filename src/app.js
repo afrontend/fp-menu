@@ -33,9 +33,9 @@ const getButton = cmd => {
   button.className = cmd.id;
   button.style.color = COLOR;
   button.style.backgroundColor = BGCOLOR;
-  button.style.fontSize = "24px";
-  button.style.height = "40px";
-  button.style.lineHeight= "40px";
+  button.style.fontSize = "1.8em";
+  button.style.height = "2em";
+  button.style.lineHeight= "2em";
   button.style.marginBottom = "1px";
   button.style.width = "400px";
   button.style.paddingRight = "5px";
