@@ -25,14 +25,36 @@ const appDir = jetpack.cwd(app.getAppPath());
 // files from disk like it's node.js! Welcome to Electron world :)
 const manifest = appDir.read("package.json", "json");
 
+const config = (function () {
+  const op = {};
+  op.color = 'black';
+  op.bgColor = 'white';
+  const setColor = (color = 'black', bgColor = 'white') => {
+    op.color = color;
+    op.bgColor = bgColor;
+  }
+
+  const getColor = () => {
+    return {
+      color: op.color,
+      bgColor: op.bgColor
+    };
+  }
+  return {
+    setColor,
+    getColor
+  }
+})();
+
 const COLOR = 'black'
 const BGCOLOR = "#F2F1F0"
 
 const getButton = cmd => {
   const button = document.createElement("div");
+  const { color, bgColor } = config.getColor();
   button.className = cmd.id;
-  button.style.color = COLOR;
-  button.style.backgroundColor = BGCOLOR;
+  button.style.color = color;
+  button.style.backgroundColor = bgColor;
   button.style.fontSize = "1.8em";
   button.style.height = "2em";
   button.style.lineHeight= "2em";
@@ -114,13 +136,14 @@ const addCommands = cmdAry => {
 }
 
 const render = cmdAry => {
+  const { color, bgColor } = config.getColor();
   _.each(cmdAry, cmd => {
     if (cmd.focused) {
-      document.querySelector(`.${cmd.id}`).style.color = BGCOLOR;
-      document.querySelector(`.${cmd.id}`).style.backgroundColor = COLOR;
+      document.querySelector(`.${cmd.id}`).style.color = bgColor;
+      document.querySelector(`.${cmd.id}`).style.backgroundColor = color;
     } else {
-      document.querySelector(`.${cmd.id}`).style.color = COLOR;
-      document.querySelector(`.${cmd.id}`).style.backgroundColor = BGCOLOR;
+      document.querySelector(`.${cmd.id}`).style.color = color;
+      document.querySelector(`.${cmd.id}`).style.backgroundColor = bgColor;
     }
   });
 }
@@ -249,6 +272,7 @@ const getCmdListFromFile = () => {
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
+    config.setColor(obj.color, obj.bgColor);
   }
 
   return _.map(cmdList, makeCmd);
