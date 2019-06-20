@@ -49,6 +49,10 @@ const config = (function () {
 const COLOR = 'black'
 const BGCOLOR = "#F2F1F0"
 
+const addSpace = name => {
+  return name.replace(/ /g, '&nbsp;');
+};
+
 const getButton = cmd => {
   const button = document.createElement("div");
   const { color, bgColor } = config.getColor();
@@ -62,7 +66,7 @@ const getButton = cmd => {
   button.style.width = "400px";
   button.style.paddingRight = "5px";
   button.style.paddingLeft = "5px";
-  button.appendChild(document.createTextNode(cmd.name));
+  button.innerHTML = addSpace(cmd.name);
   return button;
 }
 
