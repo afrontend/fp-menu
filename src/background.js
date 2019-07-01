@@ -9,6 +9,8 @@ import { app, Menu } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
+import _ from "lodash";
+import pkg from  "../package.json";
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -30,9 +32,7 @@ if (env.name !== "production") {
   app.setPath("userData", `${userDataPath} (${env.name})`);
 }
 
-app.on("ready", () => {
-  global.sharedObject = {argv: process.argv}
-
+const launchFrontend = () => {
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
@@ -54,6 +54,35 @@ app.on("ready", () => {
 
   if (env.name === "development" && process.env.mode === "test") {
     mainWindow.openDevTools();
+  }
+}
+
+app.on("ready", () => {
+  global.sharedObject = { argv: process.argv }
+  console.log('argv: ' + process.argv);
+
+  if (_.last(process.argv).includes("--show-config-file")) {
+    console.log(`
+{
+  "cmdList": [
+    {
+      "title": "xeyes",
+      "program": "xeyes"
+    },
+    {
+      "title": "xterm",
+      "program": "xterm"
+    },
+    {
+      "title": "terminator",
+      "program": "terminator"
+    }
+  ]
+}
+`);
+    app.quit();
+  } else {
+    launchFrontend();
   }
 });
 
