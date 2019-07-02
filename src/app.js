@@ -20,6 +20,7 @@ import { spawn } from 'child_process';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
+const DEFAULT_RC_FILE = ".xmenu.json";
 
 // Holy crap! This is browser window with HTML and stuff, but I can read
 // files from disk like it's node.js! Welcome to Electron world :)
@@ -263,7 +264,7 @@ const getCmdListFromFile = () => {
  * }
  */
 
-  const rc_file_path = path.resolve(process.env.HOME, '.xmenu.json')
+  const rc_file_path = path.resolve(process.env.HOME, DEFAULT_RC_FILE)
 
   let cmdList = [];
 
@@ -272,7 +273,7 @@ const getCmdListFromFile = () => {
     try {
       obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
     } catch (e) {
-      notify("parse error (~/.xmenu.json) ");
+      notify(`parse error (~/${DEFAULT_RC_FILE})`);
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
