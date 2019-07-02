@@ -1,4 +1,4 @@
-# fp-menu [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+<!-- # fp-menu [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url] -->
 > Execute the external command
 
 ## Installation
@@ -7,12 +7,15 @@
 git clone https://github.com/afrontend/fp-menu.git
 cd fp-menu
 npm install
+npm run release
 ```
 
 ## Usage
 
 ```js
-npm start
+# Linux
+dist/Fp-Menu\ 0.0.1.AppImage
+dist/Fp-Menu\ 0.0.1.AppImage --show-config-file > ~/.xmenu.json
 ```
 
 ## License

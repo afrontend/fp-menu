@@ -59,7 +59,6 @@ const launchFrontend = () => {
 
 app.on("ready", () => {
   global.sharedObject = { argv: process.argv }
-  console.log('argv: ' + process.argv);
 
   if (_.last(process.argv).includes("--show-config-file")) {
     console.log(`
