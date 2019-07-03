@@ -63,6 +63,8 @@ app.on("ready", () => {
   if (_.last(process.argv).includes("--show-config-file")) {
     console.log(`
 {
+  "color": "red",
+  "bgColor": "#F2F1F0",
   "cmdList": [
     {
       "title": "xeyes",

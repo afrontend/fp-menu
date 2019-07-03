@@ -17,6 +17,7 @@ import path  from 'path';
 import { greet } from "./hello_world/hello_world";
 import { remote } from "electron";
 import { spawn } from 'child_process';
+import { getCmdListFromDefaultFile } from './menu';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -249,44 +250,10 @@ const notify = (msg) => {
   new Notification('Info', { body: msg });
 }
 
-const getCmdListFromFile = () => {
-
-/*
- * ~/.xmenu.json
- *
- * {
- *   "cmdList": [
- *     {
- *       "title": "xeyes",
- *       "program": "xeyes"
- *     }
- *   ]
- * }
- */
-
-  const rc_file_path = path.resolve(process.env.HOME, DEFAULT_RC_FILE)
-
-  let cmdList = [];
-
-  if (fs.existsSync(rc_file_path)) {
-    let obj = {};
-    try {
-      obj = JSON.parse(fs.readFileSync(rc_file_path, 'utf8'));
-    } catch (e) {
-      notify(`parse error (~/${DEFAULT_RC_FILE})`);
-      obj.cmdList = [];
-    }
-    cmdList = obj.cmdList;
-    config.setColor(obj.color, obj.bgColor);
-  }
-
-  return _.map(cmdList, makeCmd);
-}
-
 let cmdList = [];
 cmdList = getCmdListFromArgv();
 if (cmdList.length === 0) {
-  cmdList = getCmdListFromFile();
+  cmdList = getCmdListFromDefaultFile();
 }
 
 activate(cmdList);
