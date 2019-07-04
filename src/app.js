@@ -17,7 +17,7 @@ import path  from 'path';
 import { greet } from "./hello_world/hello_world";
 import { remote } from "electron";
 import { spawn } from 'child_process';
-import { getCmdListFromDefaultFile } from './menu';
+import { getCmdListFromAry, getCmdListFromDefaultFile } from './menu';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -220,38 +220,17 @@ const makeCmd = (cmd, index) => {
   }
 }
 
-const getCmdListFromArgv = () => {
-  const ary = remote.getGlobal('sharedObject').argv;
-
-  ary.shift();
-
-  if (ary[0] === ".") {
-    ary.shift();
-  }
-
-  const titleAry = _.filter(ary, (value, index) => (index % 2 === 0));
-  const programAry = _.filter(ary, (value, index) => (index % 2 !== 0));
-  const cmdAry = _.filter(
-    _.zip(titleAry, programAry),
-    pair => pair[0] && pair[1] && pair[0][0] !== '-'
-  );
-
-  const cmdList = _.map(cmdAry, (cmd) => {
-    return {
-      title: cmd[0],
-      program: cmd[1]
-    }
-  });
-
-  return _.map(cmdList, makeCmd);
-}
-
 const notify = (msg) => {
   new Notification('Info', { body: msg });
 }
 
 let cmdList = [];
-cmdList = getCmdListFromArgv();
+const argv = remote.getGlobal('sharedObject').argv;
+argv.shift();
+if (argv[0] === ".") {
+  argv.shift();
+}
+cmdList = getCmdListFromAry(argv);
 if (cmdList.length === 0) {
   cmdList = getCmdListFromDefaultFile();
 }

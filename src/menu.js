@@ -30,10 +30,7 @@ const makeCmd = (cmd, index) => {
 const even = index => index % 2 === 0;
 const odd = index => index % 2 !== 0;
 
-const getCmdListFromAry = aAry => {
-  const ary = _.filter(aAry, arg => {
-    return arg[0] !== "/";
-  });
+const getCmdListFromAry = ary => {
   const titleAry = _.filter(ary, (value, index) => even(index));
   const programAry = _.filter(ary, (value, index) => odd(index));
   const cmdAry = _.filter(
@@ -83,5 +80,6 @@ module.exports = {
   run,
   getCmdList,
   getCmdListFromFile,
-  getCmdListFromDefaultFile
+  getCmdListFromDefaultFile,
+  getCmdListFromAry
 };
