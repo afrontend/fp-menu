@@ -17,7 +17,7 @@ import path  from 'path';
 import { greet } from "./hello_world/hello_world";
 import { remote } from "electron";
 import { spawn } from 'child_process';
-import { getCmdListFromAry, getCmdListFromDefaultFile } from './menu';
+import { run, getCmdListFromAry, getCmdListFromDefaultFile } from './menu';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -103,29 +103,17 @@ const runById = (id) => {
   });
 
   render(cmdList);
-  run(cmdList);
+  runFocusedItem(cmdList);
 }
 
-const run = cmdAry => {
+const runFocusedItem = cmdAry => {
   const found = _.find(cmdAry, (cmd) => cmd.focused === true);
   if (!found) return;
-
   if (!found.program) {
     console.warn("Invalid program");
     return;
   }
-
-  const child = spawn(found.program, found.args);
-  child.stdout.on('data', (data) => {
-    console.log(`${found.name} stdout: ${data}`);
-  });
-  child.stderr.on('data', (data) => {
-    console.log(`${found.name} stderr: ${data}`);
-  });
-  child.on('close', (code) => {
-    console.log(`${found.name} child process exited with code ${code}`);
-  });
-
+  run(found.program, found.args);
   app.quit();
 };
 
@@ -207,7 +195,7 @@ const activate = cmdAry => {
   Mousetrap.bind('down', () => { focusNextButton(cmdAry); });
   Mousetrap.bind('k', () => { focusPrevButton(cmdAry); });
   Mousetrap.bind('up', () => { focusPrevButton(cmdAry); });
-  Mousetrap.bind('enter', () => { run(cmdAry); });
+  Mousetrap.bind('enter', () => { runFocusedItem(cmdAry); });
   Mousetrap.bind('q', () => { app.quit(); });
 }
 
