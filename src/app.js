@@ -17,7 +17,7 @@ import path  from 'path';
 import { greet } from "./hello_world/hello_world";
 import { remote } from "electron";
 import { spawn } from 'child_process';
-import { run, getCmdListFromAry, getCmdListFromDefaultFile } from './menu';
+import { run, getCmdList } from './menu';
 
 const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
@@ -212,15 +212,11 @@ const notify = (msg) => {
   new Notification('Info', { body: msg });
 }
 
-let cmdList = [];
 const argv = remote.getGlobal('sharedObject').argv;
 argv.shift();
 if (argv[0] === ".") {
   argv.shift();
 }
-cmdList = getCmdListFromAry(argv);
-if (cmdList.length === 0) {
-  cmdList = getCmdListFromDefaultFile();
-}
+const cmdList = getCmdList(argv);
 
 activate(cmdList);

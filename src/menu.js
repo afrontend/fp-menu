@@ -67,9 +67,9 @@ const getCmdListFromFile = (rcFilePath) => {
   return _.map(cmdList, makeCmd);
 }
 
-const getCmdList = () => {
+const getCmdList = (argv) => {
   let cmdList = [];
-  cmdList = getCmdListFromAry(process.argv);
+  cmdList = getCmdListFromAry(argv);
   if (cmdList.length === 0) {
     cmdList = getCmdListFromDefaultFile();
   }
@@ -80,6 +80,4 @@ module.exports = {
   run,
   getCmdList,
   getCmdListFromFile,
-  getCmdListFromDefaultFile,
-  getCmdListFromAry
 };
