@@ -11,9 +11,9 @@ import "./helpers/external_links.js";
 import Mousetrap from "mousetrap";
 import _ from "lodash"
 import env from "env";
-import fs  from 'fs';
+import fs from 'fs';
 import jetpack from "fs-jetpack";
-import path  from 'path';
+import path from 'path';
 import { greet } from "./hello_world/hello_world";
 import { remote } from "electron";
 import { spawn } from 'child_process';
