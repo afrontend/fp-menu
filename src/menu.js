@@ -22,8 +22,8 @@ const makeCmd = (cmd, index) => {
   return {
     id: `id${index}`,
     name: cmd.title.trim(),
-    program: cmd.program.split(" ")[0],
-    args: _.tail(cmd.program.split(" "))
+    program: cmd.program ? cmd.program.split(" ")[0] : null,
+    args: cmd.program ? _.tail(cmd.program.split(" ")) : []
   };
 };
 
@@ -45,7 +45,7 @@ const getCmdListFromAry = ary => {
     };
   });
 
-  return _.map(cmdList, makeCmd);
+  return _.filter(_.map(cmdList, makeCmd), cmd => cmd.program !== null);
 };
 
 const getCmdListFromDefaultFile = () => {
@@ -56,15 +56,16 @@ const getCmdListFromFile = (rcFilePath) => {
   let cmdList = [];
   if (fs.existsSync(rcFilePath)) {
     let obj = {};
+    const jsonFile = fs.readFileSync(rcFilePath, 'utf8');
     try {
-      obj = JSON.parse(fs.readFileSync(rcFilePath, 'utf8'));
+      obj = JSON.parse(jsonFile);
     } catch (e) {
       notify(`parse error (~/${DEFAULT_RC_FILE})`);
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
+    return _.filter(_.map(cmdList, makeCmd), cmd => cmd.program !== null);
   }
-  return _.map(cmdList, makeCmd);
 }
 
 const getCmdList = (argv) => {
