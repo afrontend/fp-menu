@@ -41,8 +41,10 @@ const launchFrontend = () => {
     frame: false
   });
 
-  mainWindow.setMaximumSize(400 + 20, 600 + 20);
-  mainWindow.setMinimumSize(400 + 20, 600 + 20);
+  /*
+   * mainWindow.setMaximumSize(400 + 20, 600 + 20);
+   * mainWindow.setMinimumSize(400 + 20, 600 + 20);
+   */
 
   mainWindow.loadURL(
     url.format({
