@@ -50,11 +50,11 @@ const config = (function () {
 const COLOR = 'black'
 const BGCOLOR = "#F2F1F0"
 
-const addSpace = name => {
+const getSpace = name => {
   return name.replace(/ /g, '&nbsp;');
 };
 
-const getButton = cmd => {
+const createButton = cmd => {
   const button = document.createElement("div");
   const { color, bgColor } = config.getColor();
   button.className = cmd.id;
@@ -67,7 +67,7 @@ const getButton = cmd => {
   button.style.width = "400px";
   button.style.paddingRight = "5px";
   button.style.paddingLeft = "5px";
-  button.innerHTML = addSpace(cmd.name);
+  button.innerHTML = getSpace(cmd.name);
   return button;
 }
 
@@ -78,7 +78,7 @@ const addButtons = cmdAry => {
   div.style = "display: none";
 
   _.each(cmdAry, cmd => {
-    div.appendChild(getButton(cmd));
+    div.appendChild(createButton(cmd));
   });
 
   document.getElementsByTagName("body")[0].appendChild(div);
