@@ -64,8 +64,9 @@ const getCmdListFromFile = (rcFilePath) => {
       obj.cmdList = [];
     }
     cmdList = obj.cmdList;
-    return _.filter(_.map(cmdList, makeCmd), cmd => cmd.program !== null);
   }
+
+  return _.filter(_.map(cmdList, makeCmd), cmd => cmd.program !== null);
 }
 
 const getCmdList = (argv) => {
