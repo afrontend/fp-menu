@@ -4,7 +4,7 @@
   "description": "Execute the external command",
   "version": "0.0.1",
   "private": true,
-  "author": "Bob Hwang <frontend.wordpress@gmail.com>",
+  "author": "Bob Hwang <autoscripts@gmail.com>",
   "homepage": "https://agvim.wordpress.com",
   "main": "app/background.js",
   "build": {

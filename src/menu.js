@@ -81,5 +81,5 @@ const getCmdList = (argv) => {
 module.exports = {
   run,
   getCmdList,
-  getCmdListFromFile,
+  getCmdListFromFile
 };
