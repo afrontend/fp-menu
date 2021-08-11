@@ -5,7 +5,7 @@
   "version": "0.0.2",
   "private": true,
   "author": "Bob Hwang <autoscripts@gmail.com>",
-  "homepage": "https://agvim.wordpress.com",
+  "homepage": "https://afrontend.github.io",
   "main": "app/background.js",
   "build": {
     "appId": "io.github.afrontend.fp-menu",

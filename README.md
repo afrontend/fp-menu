@@ -20,7 +20,7 @@ dist/Fp-Menu\ 0.0.1.AppImage --show-config-file > ~/.xmenu.json
 
 ## License
 
-MIT © [Bob Hwang](https://agvim.wordpress.com)
+MIT © [Bob Hwang](https://afrontend.github.io)
 
 
 [npm-image]: https://badge.fury.io/js/fp-menu.svg
