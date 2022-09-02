@@ -27,7 +27,7 @@
     "e2e": "mocha temp/e2e.js --require source-map-support/register",
     "test": "npm run unit && npm run e2e",
     "start": "node build/start.js",
-    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
+    "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "license": "MIT",
   "dependencies": {
@@ -43,7 +43,7 @@
     "chai": "^4.1.0",
     "css-loader": "^1.0.0",
     "electron": ">=7.2.4",
-    "electron-builder": "^22.8.1",
+    "electron-builder": "^23.5.0",
     "electron-mocha": "^8.2.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "mocha": "^8.0.1",
