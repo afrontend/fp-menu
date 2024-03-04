@@ -43,7 +43,7 @@
     "chai": "^4.1.0",
     "css-loader": "^6.7.3",
     "electron": ">=24.8.5",
-    "electron-builder": "^24.3.0",
+    "electron-builder": "^24.13.3",
     "electron-mocha": "^11.0.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "mocha": "^10.2.0",
